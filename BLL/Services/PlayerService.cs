@@ -30,6 +30,7 @@ namespace BLL.Services
             var entity = _db.Players.SingleOrDefault(p => p.Id == id);
             if (entity is null)
                 return Error("Player cannot be found! ");
+            _db.Payments.RemoveRange(entity.Payments);
             _db.Players.Remove(entity);
             _db.SaveChanges();
             return Success("Team deleted successfully. ");
