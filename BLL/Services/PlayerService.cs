@@ -37,16 +37,24 @@ namespace BLL.Services
 
         public IQueryable<PlayerModel> Query()
         {
-           return _db.Players.Include(p => p.Team).OrderByDescending(p => p.Name).Select(p => new PlayerModel() { Record = p });
+            return _db.Players.Include(p => p.Team).Include(p => p.Payments).ThenInclude(pa => pa.Matches).OrderByDescending(p => p.Birthdate).Select(p => new PlayerModel() { Record = p });
         }
 
         public ServiceBase Update(Player record)
-        {
+        {   
             if (_db.Players.Any(p => p.Id != record.Id && p.Name.ToLower() == record.Name.ToLower().Trim() && 
             p.Surname.ToLower() == record.Surname.ToLower().Trim() && p.IsFemale == record.IsFemale && p.Birthdate == record.Birthdate))
                 return Error("Player with the same name exists!");
-            record.Name = record.Name?.Trim();
-            _db.Players.Update(record);
+            var entity = _db.Players.Include(p => p.Payments).SingleOrDefault(p => p.Id == record.Id);
+            if (entity is null)
+                return Error("Player is not found!");
+            _db.Payments.RemoveRange(entity.Payments);
+            entity.Name = record.Name?.Trim();
+            entity.Surname = record.Surname?.Trim();
+            entity.IsFemale = record.IsFemale;
+            entity.Birthdate = record.Birthdate;
+            entity.Payments = record.Payments;
+            _db.Players.Update(entity);
             _db.SaveChanges();
             return Success("Player updated successfully. ");
         }

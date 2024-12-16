@@ -19,6 +19,9 @@ namespace BLL.DAL
 
         [Required]
         public int? TeamId { get; set; }
-        public Team Team { get; set; } //Navigational property
+        public Team Team { get; set; }
+
+        public List<Payment> Payments { get; set; } = new List<Payment>();
+
     }
 }

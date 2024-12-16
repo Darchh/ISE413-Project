@@ -9,11 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// AppSettings
+var appSettingsSection = builder.Configuration.GetSection(nameof(AppSettings));
+appSettingsSection.Bind(new AppSettings());
+
 //IoC Container:
-var connectionString = "server=(localdb)\\mssqllocaldb;database=HalýSahaDB;trusted_connection=true;";
+var connectionString = builder.Configuration.GetConnectionString("Db");
 builder.Services.AddDbContext<Db>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<IService<Team, TeamModel>, TeamService>();
 builder.Services.AddScoped<IService<Player, PlayerModel>, PlayerService>();
+builder.Services.AddScoped<IService<Matches, MatchesModel>, MatchesService>();
 
 var app = builder.Build();
 

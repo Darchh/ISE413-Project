@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLL.Migrations
 {
     [DbContext(typeof(Db))]
-    [Migration("20241118194408_v5")]
-    partial class v5
+    [Migration("20241216182411_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,59 @@ namespace BLL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("BLL.DAL.Matches", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Matches");
+                });
+
+            modelBuilder.Entity("BLL.DAL.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("MatchesId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MatchesId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("Payments");
+                });
 
             modelBuilder.Entity("BLL.DAL.Player", b =>
                 {
@@ -50,6 +103,7 @@ namespace BLL.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("TeamId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -83,13 +137,44 @@ namespace BLL.Migrations
                     b.ToTable("Teams");
                 });
 
+            modelBuilder.Entity("BLL.DAL.Payment", b =>
+                {
+                    b.HasOne("BLL.DAL.Matches", "Matches")
+                        .WithMany("Payments")
+                        .HasForeignKey("MatchesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BLL.DAL.Player", "Player")
+                        .WithMany("Payments")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Matches");
+
+                    b.Navigation("Player");
+                });
+
             modelBuilder.Entity("BLL.DAL.Player", b =>
                 {
                     b.HasOne("BLL.DAL.Team", "Team")
                         .WithMany("Players")
-                        .HasForeignKey("TeamId");
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("BLL.DAL.Matches", b =>
+                {
+                    b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("BLL.DAL.Player", b =>
+                {
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("BLL.DAL.Team", b =>

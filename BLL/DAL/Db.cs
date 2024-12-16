@@ -8,6 +8,10 @@ namespace BLL.DAL
 
         public DbSet<Team> Teams { get; set; }
 
+        public DbSet<Matches> Matches { get; set; }
+
+        public DbSet<Payment> Payments { get; set; }
+
         public Db(DbContextOptions options) : base(options)
         {
             

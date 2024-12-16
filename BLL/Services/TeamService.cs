@@ -44,8 +44,13 @@ namespace BLL.Services
         {
             if (_db.Teams.Any(t => t.Name.ToUpper() == record.Name.ToUpper().Trim() && t.Points == record.Points && t.IsFull == record.IsFull))
             return Error("Team with the same name exists!");
-            record.Name = record.Name?.Trim();
-            _db.Teams.Update(record);
+            var entity = _db.Teams.SingleOrDefault(t => t.Id == record.Id);
+             if (entity is null)
+                 return Error("Team is not found!");
+            entity.Name = record.Name?.Trim();
+            entity.Points = record.Points;
+            entity.IsFull = record.IsFull;
+            _db.Teams.Update(entity);
             _db.SaveChanges();
             return Success("Team updated successfully. ");
         }

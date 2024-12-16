@@ -1,4 +1,4 @@
-﻿@model PlayerModel
+﻿@model MatchesModel
 
 @* Generated from Custom Template. *@
 @* Model namespace using directive should be added to _ViewImports.cshtml. *@
@@ -8,7 +8,7 @@
     var dateTimePickerClass = "datetimepicker";
 }
 @{
-    ViewData["Title"] = "Player Edit";
+    ViewData["Title"] = "Matches Edit";
 }
 
 <div class="@containerDivClass">
@@ -30,12 +30,6 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Record.Id" />
         <div class="row mb-3">
-		    <label asp-for="IsFemale" class="col-2 col-form-label fw-bold"></label>
-		    <div class="col-10 pt-2">
-			    <input class="form-check-input" asp-for="Record.IsFemale" />
-            </div>
-        </div>
-        <div class="row mb-3">
             <label asp-for="Name" class="col-2 col-form-label fw-bold"></label>
 	        <div class="col-10">
 	            <input asp-for="Record.Name" class="form-control" />
@@ -43,39 +37,29 @@
 	        </div>
         </div>
         <div class="row mb-3">
-            <label asp-for="Surname" class="col-2 col-form-label fw-bold"></label>
+            <label asp-for="Date" class="col-2 col-form-label fw-bold"></label>
 	        <div class="col-10">
-	            <input asp-for="Record.Surname" class="form-control" />
-		        <span asp-validation-for="Record.Surname" class="text-danger"></span>
+		        <input asp-for="Record.Date" class="form-control @dateTimePickerClass" type="text" />
+		        <span asp-validation-for="Record.Date" class="text-danger"></span>
 	        </div>
         </div>
         <div class="row mb-3">
-            <label asp-for="Birthdate" class="col-2 col-form-label fw-bold"></label>
-	        <div class="col-10">
-		        <input asp-for="Record.Birthdate" class="form-control @dateTimePickerClass" type="text" />
-		        <span asp-validation-for="Record.Birthdate" class="text-danger"></span>
-	        </div>
-        </div>
-        <div class="row mb-3">
-            <label asp-for="Team" class="col-2 col-form-label fw-bold"></label>
-            <div class="col-10">
-	            <select asp-for="Record.TeamId" class="form-select" asp-items="ViewBag.TeamId">
-		            <option value="">-- Select --</option>
-	            </select>
-	            <span asp-validation-for="Record.TeamId" class="text-danger"></span>
+		    <label asp-for="IsCompleted" class="col-2 col-form-label fw-bold"></label>
+		    <div class="col-10 pt-2">
+			    <input class="form-check-input" asp-for="Record.IsCompleted" />
             </div>
         </div>
 
 @* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. *@
-        
+        @*
         <div class="row mb-3">
-                <label asp-for="PaymentIds" class="col-2 col-form-label fw-bold"></label>
+            <label asp-for="ManyToManyRecordIds" class="col-2 col-form-label fw-bold"></label>
 	        <div class="col-10">
-                    <select multiple asp-for="PaymentIds" class="form-select" asp-items="ViewBag.PaymentIds"></select>
-                    <span asp-validation-for="PaymentIds" class="text-danger"></span>
+		        <select multiple asp-for="ManyToManyRecordIds" class="form-select" asp-items="ViewBag.ManyToManyRecordIds"></select>
+		        <span asp-validation-for="ManyToManyRecordIds" class="text-danger"></span>
 	        </div>
         </div>
-       
+        *@
 
         <hr />
         <div class="row mb-3">

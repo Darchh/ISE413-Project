@@ -10,126 +10,122 @@ using BLL.Services.Bases;
 
 namespace MVC.Controllers
 {
-    public class PlayersController : MvcController
+    public class MatchesController : MvcController
     {
         // Service injections:
-        private readonly IService<Player, PlayerModel> _playerService;
-        private readonly IService<Team, TeamModel> _teamService;
-
-        /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
         private readonly IService<Matches, MatchesModel> _matchesService;
 
-        public PlayersController(
-            IService<Player, PlayerModel> playerService
-            , IService<Team, TeamModel> teamService
+        /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
+        //private readonly IManyToManyRecordService _ManyToManyRecordService;
+
+        public MatchesController(
+            IService<Matches, MatchesModel> matchesService
 
         /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-        , IService<Matches, MatchesModel> matchesService
+        //, IManyToManyRecordService ManyToManyRecordService
         )
         {
-            _playerService = playerService;
-            _teamService = teamService;
+            _matchesService = matchesService;
 
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-            _matchesService = matchesService;
+            //_ManyToManyRecordService = ManyToManyRecordService;
         }
 
-        // GET: Players
+        // GET: Matches
         public IActionResult Index()
         {
             // Get collection service logic:
-            var list = _playerService.Query().ToList();
+            var list = _matchesService.Query().ToList();
             return View(list);
         }
 
-        // GET: Players/Details/5
+        // GET: Matches/Details/5
         public IActionResult Details(int id)
         {
             // Get item service logic:
-            var item = _playerService.Query().SingleOrDefault(q => q.Record.Id == id);
+            var item = _matchesService.Query().SingleOrDefault(q => q.Record.Id == id);
             return View(item);
         }
 
         protected void SetViewData()
         {
             // Related items service logic to set ViewData (Record.Id and Name parameters may need to be changed in the SelectList constructor according to the model):
-            ViewData["TeamId"] = new SelectList(_teamService.Query().ToList(), "Record.Id", "Name");
-
+            
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-            ViewBag.PaymentIds = new MultiSelectList(_matchesService.Query().ToList(), "Record.Id", "Name");
+            //ViewBag.ManyToManyRecordIds = new MultiSelectList(_ManyToManyRecordService.Query().ToList(), "Record.Id", "Name");
         }
 
-        // GET: Players/Create
+        // GET: Matches/Create
         public IActionResult Create()
         {
             SetViewData();
             return View();
         }
 
-        // POST: Players/Create
+        // POST: Matches/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(PlayerModel player)
+        public IActionResult Create(MatchesModel matches)
         {
             if (ModelState.IsValid)
             {
                 // Insert item service logic:
-                var result = _playerService.Create(player.Record);
+                var result = _matchesService.Create(matches.Record);
                 if (result.IsSuccessful)
                 {
                     TempData["Message"] = result.Message;
-                    return RedirectToAction(nameof(Details), new { id = player.Record.Id });
+                    return RedirectToAction(nameof(Details), new { id = matches.Record.Id });
                 }
                 ModelState.AddModelError("", result.Message);
             }
             SetViewData();
-            return View(player);
+            return View(matches);
         }
 
-        // GET: Players/Edit/5
+        // GET: Matches/Edit/5
         public IActionResult Edit(int id)
         {
             // Get item to edit service logic:
-            var item = _playerService.Query().SingleOrDefault(q => q.Record.Id == id);
+            var item = _matchesService.Query().SingleOrDefault(q => q.Record.Id == id);
             SetViewData();
             return View(item);
         }
 
-        // POST: Players/Edit
+        // POST: Matches/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(PlayerModel player)
+        public IActionResult Edit(MatchesModel matches)
         {
             if (ModelState.IsValid)
             {
                 // Update item service logic:
-                var result = _playerService.Update(player.Record);
+                var result = _matchesService.Update(matches.Record);
                 if (result.IsSuccessful)
                 {
                     TempData["Message"] = result.Message;
-                    return RedirectToAction(nameof(Details), new { id = player.Record.Id });
+                    return RedirectToAction(nameof(Details), new { id = matches.Record.Id });
                 }
                 ModelState.AddModelError("", result.Message);
             }
             SetViewData();
-            return View(player);
+            return View(matches);
         }
 
-        // GET: Players/Delete/5
+        // GET: Matches/Delete/5
         public IActionResult Delete(int id)
         {
             // Get item to delete service logic:
-            var item = _playerService.Query().SingleOrDefault(q => q.Record.Id == id);
+            var item = _matchesService.Query().SingleOrDefault(q => q.Record.Id == id);
             return View(item);
         }
 
-        // POST: Players/Delete
+        // POST: Matches/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             // Delete item service logic:
-            var result = _playerService.Delete(id);
+            var result = _matchesService.Delete(id);
             TempData["Message"] = result.Message;
             return RedirectToAction(nameof(Index));
         }
